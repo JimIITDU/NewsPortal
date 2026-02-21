@@ -6,6 +6,7 @@ const { sequelize } = require('./models');
 const authRoutes = require('./routes/authRoutes');
 const newsRoutes = require('./routes/newsRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
+const commentRoutes = require('./routes/commentRoutes');
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/news/:newsId/comments', commentRoutes);
 
 const PORT = process.env.PORT || 5000;
 

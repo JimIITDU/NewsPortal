@@ -192,3 +192,20 @@ input, textarea, select { font-family: inherit; }
   .section-title { font-size: 1.4rem; }
   .container { padding: 0 16px; }
 }
+
+/* Light mode card and section adjustments */
+body.light .card {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+/* Section title light mode */
+body .section-title {
+  color: var(--white);
+}
+
+/* Form input light mode */
+body .form-input {
+  background: var(--dark3);
+  border-color: var(--border);
+  color: var(--text);
+}

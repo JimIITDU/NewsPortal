@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import api from '../api/axios'
+import CommentSection from '../components/CommentSection'
 
 export default function NewsDetail() {
   const { id } = useParams()
@@ -32,12 +33,6 @@ export default function NewsDetail() {
           position: 'absolute', inset: 0,
           background: 'linear-gradient(to top, rgba(15,15,15,1) 0%, rgba(15,15,15,0.5) 50%, rgba(15,15,15,0.2) 100%)',
         }} />
-        <div style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0,
-          padding: '0 20px 40px',
-          maxWidth: '900px', margin: '0 auto',
-        }}>
-        </div>
       </div>
 
       {/* Article */}
@@ -86,11 +81,11 @@ export default function NewsDetail() {
           >← Back</button>
         </div>
 
-        {/* Related */}
+        {/* Related Articles */}
         {related.length > 0 && (
-          <div style={{ borderTop: '1px solid #222', paddingTop: '48px', paddingBottom: '60px' }}>
+          <div style={{ borderTop: '1px solid #222', paddingTop: '48px', marginBottom: '0' }}>
             <h2 className="section-title">Related Articles</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '20px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '20px', marginBottom: '48px' }}>
               {related.map(n => (
                 <Link to={`/news/${n.id}`} key={n.id} style={{ textDecoration: 'none' }}>
                   <div className="card" style={{ padding: '1rem' }}>
@@ -106,6 +101,9 @@ export default function NewsDetail() {
             </div>
           </div>
         )}
+
+        {/* 💬 Comments */}
+        <CommentSection newsId={id} />
       </div>
     </div>
   )
