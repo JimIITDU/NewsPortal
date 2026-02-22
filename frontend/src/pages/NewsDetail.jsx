@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import api from '../api/axios'
 import CommentSection from '../components/CommentSection'
+import BookmarkButton from '../components/BookmarkButton'
+import LikeButton from '../components/LikeButton'
+import TagList from '../components/TagList'
 
-export default function NewsDetail() {
+export default function NewsDetail({ darkMode = true }) {
   const { id } = useParams()
   const navigate = useNavigate()
   const [news, setNews] = useState(null)
@@ -23,78 +26,124 @@ export default function NewsDetail() {
   if (!news) return <div className="loading-spinner"><div className="spinner" /></div>
 
   const imgUrl = news.imageUrl || `https://picsum.photos/seed/${news.id}/1200/600`
+  const textMuted = darkMode ? '#666' : '#888'
+  const textMain = darkMode ? '#fff' : '#111'
+  const border = darkMode ? '#222' : '#e8e8e8'
+  const contentColor = darkMode ? '#ccc' : '#333'
+  const cardBg = darkMode ? '#1a1a1a' : '#fff'
 
   return (
-    <div style={{ minHeight: '100vh' }}>
-      {/* Hero Image */}
+    <div style={{ minHeight: '100vh', background: darkMode ? '#0f0f0f' : '#f4f4f4' }}>
+      {/* Hero */}
       <div style={{ position: 'relative', height: '480px', overflow: 'hidden' }}>
-        <img src={imgUrl} alt={news.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        <img src={imgUrl} alt={news.title}
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         <div style={{
           position: 'absolute', inset: 0,
-          background: 'linear-gradient(to top, rgba(15,15,15,1) 0%, rgba(15,15,15,0.5) 50%, rgba(15,15,15,0.2) 100%)',
+          background: darkMode
+            ? 'linear-gradient(to top, rgba(15,15,15,1) 0%, rgba(15,15,15,0.4) 60%, transparent 100%)'
+            : 'linear-gradient(to top, rgba(244,244,244,1) 0%, rgba(244,244,244,0.3) 60%, transparent 100%)',
         }} />
       </div>
 
-      {/* Article */}
       <div className="container" style={{ maxWidth: '800px', padding: '0 20px' }}>
         <div style={{ marginTop: '-60px', position: 'relative', zIndex: 10 }}>
           <span className="badge" style={{ marginBottom: '16px' }}>{news.category?.name}</span>
+
           <h1 style={{
             fontFamily: "'Playfair Display', serif",
             fontSize: 'clamp(1.8rem, 4vw, 2.8rem)',
-            fontWeight: '900', color: '#fff',
+            fontWeight: '900', color: textMain,
             lineHeight: '1.2', marginBottom: '20px',
           }}>{news.title}</h1>
 
+          {/* Meta row */}
           <div style={{
-            display: 'flex', alignItems: 'center', gap: '16px',
-            paddingBottom: '24px', borderBottom: '1px solid #222',
-            marginBottom: '32px', flexWrap: 'wrap',
+            display: 'flex', alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingBottom: '20px', borderBottom: `1px solid ${border}`,
+            marginBottom: '16px', flexWrap: 'wrap', gap: '12px',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div style={{
-                width: '40px', height: '40px', borderRadius: '50%',
+                width: '42px', height: '42px', borderRadius: '50%',
                 background: '#c0392b', display: 'flex', alignItems: 'center',
                 justifyContent: 'center', fontWeight: '700', fontSize: '1rem', color: '#fff',
               }}>{news.author?.name?.charAt(0)}</div>
               <div>
-                <div style={{ fontWeight: '600', fontSize: '0.9rem', color: '#ddd' }}>{news.author?.name}</div>
-                <div style={{ fontSize: '0.8rem', color: '#666' }}>
-                  {new Date(news.createdAt).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                <div style={{ fontWeight: '600', fontSize: '0.9rem', color: darkMode ? '#ddd' : '#222' }}>
+                  {news.author?.name}
+                </div>
+                <div style={{ fontSize: '0.8rem', color: textMuted }}>
+                  {new Date(news.createdAt).toLocaleDateString('en-US', {
+                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                  })}
                 </div>
               </div>
             </div>
+
+            {/* Stats */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+              <span style={{
+                padding: '6px 12px', borderRadius: '8px',
+                background: darkMode ? '#1e1e1e' : '#f0f0f0',
+                border: darkMode ? '1px solid #333' : '1px solid #ddd',
+                fontSize: '0.85rem', color: textMuted,
+                display: 'flex', alignItems: 'center', gap: '4px'
+              }}>👁️ {news.views || 0}</span>
+              <LikeButton newsId={id} darkMode={darkMode} />
+              <BookmarkButton newsId={id} darkMode={darkMode} />
+            </div>
           </div>
 
+          {/* Tags */}
+          <TagList tags={news.tags} darkMode={darkMode} />
+
+          {/* Content */}
           <div style={{
-            fontSize: '1.1rem', lineHeight: '1.9', color: '#ccc',
-            marginBottom: '48px', whiteSpace: 'pre-wrap',
+            fontSize: '1.1rem', lineHeight: '1.9',
+            color: contentColor, marginBottom: '48px',
+            whiteSpace: 'pre-wrap', marginTop: '16px'
           }}>{news.content}</div>
 
-          <button
-            onClick={() => navigate(-1)}
-            style={{
-              background: 'transparent', border: '1px solid #333', color: '#aaa',
-              padding: '10px 20px', borderRadius: '8px', fontSize: '0.9rem',
-              marginBottom: '60px', display: 'flex', alignItems: 'center', gap: '6px',
-            }}
-          >← Back</button>
+          <button onClick={() => navigate(-1)} style={{
+            background: 'transparent',
+            border: darkMode ? '1px solid #333' : '1px solid #ccc',
+            color: darkMode ? '#aaa' : '#666',
+            padding: '10px 20px', borderRadius: '8px',
+            fontSize: '0.9rem', marginBottom: '60px',
+            display: 'flex', alignItems: 'center', gap: '6px',
+            cursor: 'pointer',
+          }}>← Back</button>
         </div>
 
-        {/* Related Articles */}
+        {/* Related */}
         {related.length > 0 && (
-          <div style={{ borderTop: '1px solid #222', paddingTop: '48px', marginBottom: '0' }}>
+          <div style={{ borderTop: `1px solid ${border}`, paddingTop: '48px', marginBottom: '0' }}>
             <h2 className="section-title">Related Articles</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '20px', marginBottom: '48px' }}>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+              gap: '20px', marginBottom: '48px'
+            }}>
               {related.map(n => (
                 <Link to={`/news/${n.id}`} key={n.id} style={{ textDecoration: 'none' }}>
-                  <div className="card" style={{ padding: '1rem' }}>
+                  <div className="card" style={{ padding: '1rem', background: cardBg }}>
                     <img
                       src={n.imageUrl || `https://picsum.photos/seed/${n.id}/400/200`}
                       style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '8px', marginBottom: '10px' }}
                     />
-                    <span className="badge badge-outline" style={{ marginBottom: '8px', fontSize: '0.65rem' }}>{n.category?.name}</span>
-                    <h4 style={{ fontFamily: "'Playfair Display',serif", fontSize: '0.95rem', color: '#eee', lineHeight: '1.4' }}>{n.title}</h4>
+                    <span className="badge badge-outline" style={{ marginBottom: '8px', fontSize: '0.65rem' }}>
+                      {n.category?.name}
+                    </span>
+                    <h4 style={{
+                      fontFamily: "'Playfair Display',serif",
+                      fontSize: '0.95rem', color: darkMode ? '#eee' : '#111', lineHeight: '1.4'
+                    }}>{n.title}</h4>
+                    <div style={{ display: 'flex', gap: '12px', marginTop: '8px', fontSize: '0.75rem', color: textMuted }}>
+                      <span>👁️ {n.views || 0}</span>
+                      <span>❤️ {n.likeCount || 0}</span>
+                    </div>
                   </div>
                 </Link>
               ))}
@@ -102,8 +151,7 @@ export default function NewsDetail() {
           </div>
         )}
 
-        {/* 💬 Comments */}
-        <CommentSection newsId={id} />
+        <CommentSection newsId={id} darkMode={darkMode} />
       </div>
     </div>
   )

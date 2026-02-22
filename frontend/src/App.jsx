@@ -5,9 +5,11 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import NewsDetail from './pages/NewsDetail'
+import Profile from './pages/Profile'
 import Dashboard from './pages/admin/Dashboard'
 import ManageNews from './pages/admin/ManageNews'
 import ManageCategories from './pages/admin/ManageCategories'
+import ManageUsers from './pages/admin/ManageUsers'
 import ProtectedRoute from './components/ProtectedRoute'
 
 export default function App() {
@@ -52,10 +54,14 @@ export default function App() {
         <Route path="/login" element={<Login darkMode={darkMode} />} />
         <Route path="/register" element={<Register darkMode={darkMode} />} />
         <Route path="/news/:id" element={<NewsDetail darkMode={darkMode} />} />
+        <Route path="/profile" element={<ProtectedRoute />}>
+          <Route index element={<Profile darkMode={darkMode} />} />
+        </Route>
         <Route path="/admin" element={<ProtectedRoute adminOnly />}>
           <Route index element={<Dashboard darkMode={darkMode} />} />
           <Route path="news" element={<ManageNews darkMode={darkMode} />} />
           <Route path="categories" element={<ManageCategories darkMode={darkMode} />} />
+          <Route path="users" element={<ManageUsers darkMode={darkMode} />} />
         </Route>
       </Routes>
     </div>

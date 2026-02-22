@@ -19,7 +19,7 @@ const s = {
   del: { background: '#c0392b', color: '#fff', border: 'none', padding: '0.3rem 0.8rem', borderRadius: '4px', cursor: 'pointer', marginLeft: '0.5rem' }
 }
 
-const emptyForm = { title: '', content: '', imageUrl: '', categoryId: '' }
+const emptyForm = { title: '', content: '', imageUrl: '', categoryId: '', tags: '' }
 
 export default function ManageNews() {
   const [newsList, setNewsList] = useState([])
@@ -58,6 +58,7 @@ export default function ManageNews() {
     setForm({ title: news.title, content: news.content, imageUrl: news.imageUrl || '', categoryId: news.categoryId })
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
+  
 
   const handleDelete = async (id) => {
     if (!confirm('Delete this article?')) return
