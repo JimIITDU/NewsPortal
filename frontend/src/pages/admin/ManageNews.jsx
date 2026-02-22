@@ -1,34 +1,37 @@
 import { useEffect, useState } from 'react'
 import api from '../../api/axios'
 
-const s = {
-  page: { maxWidth: '900px', margin: '2rem auto', padding: '0 1rem' },
-  h1: { color: '#1a1a2e', marginBottom: '1.5rem' },
-  form: { background: '#fff', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', marginBottom: '2rem' },
-  formTitle: { marginTop: 0, color: '#1a1a2e' },
-  row: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' },
-  input: { width: '100%', padding: '0.6rem 1rem', border: '1px solid #ddd', borderRadius: '4px', fontSize: '1rem', boxSizing: 'border-box' },
-  textarea: { width: '100%', padding: '0.6rem 1rem', border: '1px solid #ddd', borderRadius: '4px', fontSize: '1rem', minHeight: '100px', boxSizing: 'border-box', marginBottom: '1rem' },
-  select: { width: '100%', padding: '0.6rem 1rem', border: '1px solid #ddd', borderRadius: '4px', fontSize: '1rem', boxSizing: 'border-box' },
-  btnRow: { display: 'flex', gap: '1rem', marginTop: '1rem' },
-  btn: { padding: '0.6rem 1.5rem', background: '#e94560', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '1rem' },
-  btnGray: { padding: '0.6rem 1.5rem', background: '#888', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '1rem' },
-  table: { width: '100%', borderCollapse: 'collapse', background: '#fff', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' },
-  th: { background: '#1a1a2e', color: '#fff', padding: '0.75rem 1rem', textAlign: 'left' },
-  td: { padding: '0.75rem 1rem', borderBottom: '1px solid #eee', verticalAlign: 'middle' },
-  del: { background: '#c0392b', color: '#fff', border: 'none', padding: '0.3rem 0.8rem', borderRadius: '4px', cursor: 'pointer', marginLeft: '0.5rem' }
-}
-
 const emptyForm = { title: '', content: '', imageUrl: '', categoryId: '', tags: '' }
 
-export default function ManageNews() {
+export default function ManageNews({ darkMode = true }) {
   const [newsList, setNewsList] = useState([])
   const [categories, setCategories] = useState([])
   const [form, setForm] = useState(emptyForm)
   const [editId, setEditId] = useState(null)
   const [error, setError] = useState('')
 
+  const bg = darkMode ? '#0f0f0f' : '#f4f4f4'
+  const cardBg = darkMode ? '#1a1a1a' : '#ffffff'
+  const border = darkMode ? '#2a2a2a' : '#e8e8e8'
+  const textMain = darkMode ? '#f0f0f0' : '#111'
+  const textMuted = darkMode ? '#888' : '#666'
+  const inputBg = darkMode ? '#242424' : '#f8f8f8'
+  const inputBorder = darkMode ? '#333' : '#ddd'
+
+  const inputStyle = {
+    width: '100%', padding: '10px 14px', boxSizing: 'border-box',
+    background: inputBg, border: `1px solid ${inputBorder}`,
+    color: textMain, borderRadius: '8px', fontSize: '0.95rem',
+    outline: 'none', fontFamily: 'Inter, sans-serif',
+  }
+  const labelStyle = {
+    display: 'block', fontSize: '0.78rem', fontWeight: '700',
+    color: textMuted, marginBottom: '6px',
+    textTransform: 'uppercase', letterSpacing: '0.5px'
+  }
+
   const fetchNews = () => api.get('/news').then(res => setNewsList(res.data))
+
   useEffect(() => {
     fetchNews()
     api.get('/categories').then(res => setCategories(res.data))
@@ -49,16 +52,19 @@ export default function ManageNews() {
       setForm(emptyForm)
       fetchNews()
     } catch (err) {
-      setError(err.response?.data?.errors?.[0]?.msg || err.response?.data?.message || 'Error saving news.')
+      setError(err.response?.data?.errors?.[0]?.msg || err.response?.data?.message || 'Error saving.')
     }
   }
 
   const handleEdit = (news) => {
     setEditId(news.id)
-    setForm({ title: news.title, content: news.content, imageUrl: news.imageUrl || '', categoryId: news.categoryId })
+    setForm({
+      title: news.title, content: news.content,
+      imageUrl: news.imageUrl || '', categoryId: news.categoryId,
+      tags: news.tags || ''
+    })
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
-  
 
   const handleDelete = async (id) => {
     if (!confirm('Delete this article?')) return
@@ -67,51 +73,145 @@ export default function ManageNews() {
   }
 
   return (
-    <div style={s.page}>
-      <h1 style={s.h1}>Manage News</h1>
-      <div style={s.form}>
-        <h3 style={s.formTitle}>{editId ? 'Edit Article' : 'Add New Article'}</h3>
-        {error && <p style={{ color: 'red', marginBottom: '1rem' }}>{error}</p>}
-        <form onSubmit={handleSubmit}>
-          <div style={s.row}>
-            <input style={s.input} name="title" placeholder="Title" value={form.title} onChange={handleChange} required />
-            <select style={s.select} name="categoryId" value={form.categoryId} onChange={handleChange} required>
-              <option value="">Select Category</option>
-              {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-            </select>
-          </div>
-          <input style={{ ...s.input, marginBottom: '1rem' }} name="imageUrl" placeholder="Image URL (optional)" value={form.imageUrl} onChange={handleChange} />
-          <textarea style={s.textarea} name="content" placeholder="Content" value={form.content} onChange={handleChange} required />
-          <div style={s.btnRow}>
-            <button style={s.btn} type="submit">{editId ? 'Update' : 'Publish'}</button>
-            {editId && <button style={s.btnGray} type="button" onClick={() => { setEditId(null); setForm(emptyForm) }}>Cancel</button>}
-          </div>
-        </form>
-      </div>
+    <div style={{ minHeight: '100vh', background: bg, padding: '32px 20px' }}>
+      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
 
-      <table style={s.table}>
-        <thead>
-          <tr>
-            <th style={s.th}>Title</th>
-            <th style={s.th}>Category</th>
-            <th style={s.th}>Date</th>
-            <th style={s.th}>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {newsList.map(n => (
-            <tr key={n.id}>
-              <td style={s.td}>{n.title}</td>
-              <td style={s.td}>{n.category?.name}</td>
-              <td style={s.td}>{new Date(n.createdAt).toLocaleDateString()}</td>
-              <td style={s.td}>
-                <button style={s.btn} onClick={() => handleEdit(n)}>Edit</button>
-                <button style={s.del} onClick={() => handleDelete(n.id)}>Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+        <h1 style={{
+          fontFamily: "'Playfair Display', serif",
+          fontSize: '2rem', fontWeight: '900',
+          color: textMain, marginBottom: '28px'
+        }}>Manage Articles</h1>
+
+        {/* Form */}
+        <div style={{
+          background: cardBg, border: `1px solid ${border}`,
+          borderRadius: '12px', padding: '1.75rem', marginBottom: '32px'
+        }}>
+          <h3 style={{ color: textMain, marginBottom: '20px', fontWeight: '700', fontSize: '1.1rem' }}>
+            {editId ? '✏️ Edit Article' : '➕ New Article'}
+          </h3>
+          {error && (
+            <div style={{
+              background: 'rgba(192,57,43,0.15)', border: '1px solid rgba(192,57,43,0.4)',
+              color: '#e74c3c', padding: '10px 14px', borderRadius: '8px', marginBottom: '16px', fontSize: '0.9rem'
+            }}>⚠️ {error}</div>
+          )}
+          <form onSubmit={handleSubmit}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+              <div>
+                <label style={labelStyle}>Title</label>
+                <input style={inputStyle} name="title" placeholder="Article title"
+                  value={form.title} onChange={handleChange} required />
+              </div>
+              <div>
+                <label style={labelStyle}>Category</label>
+                <select style={inputStyle} name="categoryId" value={form.categoryId} onChange={handleChange} required>
+                  <option value="">Select category</option>
+                  {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                </select>
+              </div>
+            </div>
+            <div style={{ marginBottom: '16px' }}>
+              <label style={labelStyle}>Image URL (optional)</label>
+              <input style={inputStyle} name="imageUrl" placeholder="https://..."
+                value={form.imageUrl} onChange={handleChange} />
+            </div>
+            <div style={{ marginBottom: '16px' }}>
+              <label style={labelStyle}>Tags (comma separated)</label>
+              <input style={inputStyle} name="tags" placeholder="politics, economy, world"
+                value={form.tags} onChange={handleChange} />
+            </div>
+            <div style={{ marginBottom: '20px' }}>
+              <label style={labelStyle}>Content</label>
+              <textarea
+                style={{ ...inputStyle, minHeight: '140px', resize: 'vertical' }}
+                name="content" placeholder="Write your article..."
+                value={form.content} onChange={handleChange} required
+              />
+            </div>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button type="submit" style={{
+                background: '#c0392b', color: '#fff', border: 'none',
+                padding: '10px 28px', borderRadius: '8px',
+                fontSize: '0.95rem', fontWeight: '700', cursor: 'pointer'
+              }}>{editId ? 'Update' : 'Publish'}</button>
+              {editId && (
+                <button type="button" onClick={() => { setEditId(null); setForm(emptyForm) }} style={{
+                  background: darkMode ? '#2a2a2a' : '#e8e8e8',
+                  color: textMuted, border: 'none',
+                  padding: '10px 28px', borderRadius: '8px',
+                  fontSize: '0.95rem', fontWeight: '700', cursor: 'pointer'
+                }}>Cancel</button>
+              )}
+            </div>
+          </form>
+        </div>
+
+        {/* Table */}
+        <div style={{ background: cardBg, border: `1px solid ${border}`, borderRadius: '12px', overflow: 'hidden' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ background: darkMode ? '#242424' : '#f5f5f5' }}>
+                {['Title', 'Category', 'Views', 'Date', 'Actions'].map(h => (
+                  <th key={h} style={{
+                    textAlign: 'left', padding: '14px 16px',
+                    fontSize: '0.75rem', fontWeight: '700',
+                    color: textMuted, textTransform: 'uppercase', letterSpacing: '0.5px'
+                  }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {newsList.map(n => (
+                <tr key={n.id} style={{ borderTop: `1px solid ${border}` }}>
+                  <td style={{ padding: '12px 16px', color: textMain, fontSize: '0.9rem', fontWeight: '500', maxWidth: '260px' }}>
+                    <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{n.title}</div>
+                    {n.tags && (
+                      <div style={{ marginTop: '4px' }}>
+                        {n.tags.split(',').slice(0, 2).map(t => (
+                          <span key={t} style={{
+                            fontSize: '0.65rem', color: '#c0392b',
+                            background: 'rgba(192,57,43,0.1)',
+                            padding: '1px 6px', borderRadius: '10px', marginRight: '4px'
+                          }}>#{t.trim()}</span>
+                        ))}
+                      </div>
+                    )}
+                  </td>
+                  <td style={{ padding: '12px 16px', color: textMuted, fontSize: '0.85rem' }}>
+                    {n.category?.name}
+                  </td>
+                  <td style={{ padding: '12px 16px', color: textMuted, fontSize: '0.85rem' }}>
+                    👁️ {n.views || 0}
+                  </td>
+                  <td style={{ padding: '12px 16px', color: textMuted, fontSize: '0.85rem' }}>
+                    {new Date(n.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  </td>
+                  <td style={{ padding: '12px 16px' }}>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button onClick={() => handleEdit(n)} style={{
+                        background: 'rgba(41,128,185,0.15)', color: '#2980b9',
+                        border: 'none', padding: '5px 12px', borderRadius: '6px',
+                        fontSize: '0.8rem', fontWeight: '600', cursor: 'pointer'
+                      }}>Edit</button>
+                      <button onClick={() => handleDelete(n.id)} style={{
+                        background: 'rgba(192,57,43,0.15)', color: '#c0392b',
+                        border: 'none', padding: '5px 12px', borderRadius: '6px',
+                        fontSize: '0.8rem', fontWeight: '600', cursor: 'pointer'
+                      }}>Delete</button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {newsList.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '3rem', color: textMuted }}>
+              No articles yet. Create your first one above!
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

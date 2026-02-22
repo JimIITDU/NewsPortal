@@ -11,6 +11,7 @@ import ManageNews from './pages/admin/ManageNews'
 import ManageCategories from './pages/admin/ManageCategories'
 import ManageUsers from './pages/admin/ManageUsers'
 import ProtectedRoute from './components/ProtectedRoute'
+import NotFound from './pages/NotFound'
 
 export default function App() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -62,6 +63,7 @@ export default function App() {
           <Route path="news" element={<ManageNews darkMode={darkMode} />} />
           <Route path="categories" element={<ManageCategories darkMode={darkMode} />} />
           <Route path="users" element={<ManageUsers darkMode={darkMode} />} />
+          <Route path="*" element={<NotFound darkMode={darkMode} />} />
         </Route>
       </Routes>
     </div>

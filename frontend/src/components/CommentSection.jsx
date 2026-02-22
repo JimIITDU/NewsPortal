@@ -3,13 +3,21 @@ import { Link } from 'react-router-dom'
 import api from '../api/axios'
 import { useAuth } from '../context/AuthContext'
 
-export default function CommentSection({ newsId }) {
+export default function CommentSection({ newsId, darkMode = true }) {
   const { user } = useAuth()
   const [comments, setComments] = useState([])
   const [text, setText] = useState('')
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
+
+  const cardBg = darkMode ? '#1a1a1a' : '#ffffff'
+  const cardBg2 = darkMode ? '#242424' : '#f8f8f8'
+  const border = darkMode ? '#2a2a2a' : '#e8e8e8'
+  const border2 = darkMode ? '#333' : '#ddd'
+  const textMain = darkMode ? '#f0f0f0' : '#111'
+  const textMuted = darkMode ? '#666' : '#888'
+  const textContent = darkMode ? '#bbb' : '#333'
 
   const fetchComments = () => {
     api.get(`/news/${newsId}/comments`)
@@ -58,20 +66,14 @@ export default function CommentSection({ newsId }) {
   }
 
   return (
-    <div style={{
-      borderTop: '1px solid #222',
-      paddingTop: '48px',
-      paddingBottom: '60px',
-      marginTop: '16px'
-    }}>
+    <div style={{ borderTop: `1px solid ${border}`, paddingTop: '48px', paddingBottom: '60px' }}>
+
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '32px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '28px' }}>
         <h2 style={{
           fontFamily: "'Playfair Display', serif",
-          fontSize: '1.6rem', fontWeight: '700', color: '#fff'
-        }}>
-          💬 Discussion
-        </h2>
+          fontSize: '1.6rem', fontWeight: '700', color: textMain
+        }}>💬 Discussion</h2>
         <span style={{
           background: '#c0392b', color: '#fff',
           fontSize: '0.75rem', fontWeight: '700',
@@ -82,19 +84,16 @@ export default function CommentSection({ newsId }) {
       {/* Comment Form */}
       {user ? (
         <div style={{
-          background: '#1a1a1a', border: '1px solid #2a2a2a',
-          borderRadius: '12px', padding: '1.25rem',
-          marginBottom: '32px'
+          background: cardBg, border: `1px solid ${border}`,
+          borderRadius: '12px', padding: '1.25rem', marginBottom: '28px'
         }}>
           <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-            {/* Avatar */}
             <div style={{
               width: '38px', height: '38px', borderRadius: '50%',
               background: '#c0392b', flexShrink: 0,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontWeight: '700', fontSize: '0.9rem', color: '#fff'
             }}>{user.name?.charAt(0).toUpperCase()}</div>
-
             <form onSubmit={handleSubmit} style={{ flex: 1 }}>
               <textarea
                 value={text}
@@ -102,16 +101,15 @@ export default function CommentSection({ newsId }) {
                 placeholder="Share your thoughts..."
                 rows={3}
                 style={{
-                  width: '100%', background: '#242424',
-                  border: '1px solid #333', color: '#e8e8e8',
+                  width: '100%', background: cardBg2,
+                  border: `1px solid ${border2}`, color: textMain,
                   padding: '12px 14px', borderRadius: '8px',
-                  fontSize: '0.95rem', resize: 'vertical',
-                  outline: 'none', fontFamily: 'Inter, sans-serif',
-                  marginBottom: '10px', transition: 'border-color 0.2s',
-                  boxSizing: 'border-box'
+                  fontSize: '0.95rem', resize: 'vertical', outline: 'none',
+                  fontFamily: 'Inter, sans-serif', marginBottom: '10px',
+                  transition: 'border-color 0.2s', boxSizing: 'border-box'
                 }}
                 onFocus={e => e.target.style.borderColor = '#c0392b'}
-                onBlur={e => e.target.style.borderColor = '#333'}
+                onBlur={e => e.target.style.borderColor = border2}
               />
               {error && (
                 <p style={{ color: '#e74c3c', fontSize: '0.85rem', marginBottom: '8px' }}>
@@ -119,31 +117,25 @@ export default function CommentSection({ newsId }) {
                 </p>
               )}
               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <button
-                  type="submit"
-                  disabled={submitting || !text.trim()}
-                  style={{
-                    background: submitting || !text.trim() ? '#444' : '#c0392b',
-                    color: '#fff', border: 'none',
-                    padding: '8px 20px', borderRadius: '6px',
-                    fontSize: '0.9rem', fontWeight: '600',
-                    cursor: submitting || !text.trim() ? 'not-allowed' : 'pointer',
-                    transition: 'background 0.2s'
-                  }}
-                >
-                  {submitting ? 'Posting...' : 'Post Comment'}
-                </button>
+                <button type="submit" disabled={submitting || !text.trim()} style={{
+                  background: submitting || !text.trim() ? (darkMode ? '#444' : '#ccc') : '#c0392b',
+                  color: submitting || !text.trim() ? (darkMode ? '#888' : '#999') : '#fff',
+                  border: 'none', padding: '8px 20px', borderRadius: '6px',
+                  fontSize: '0.9rem', fontWeight: '600',
+                  cursor: submitting || !text.trim() ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s'
+                }}>{submitting ? 'Posting...' : 'Post Comment'}</button>
               </div>
             </form>
           </div>
         </div>
       ) : (
         <div style={{
-          background: '#1a1a1a', border: '1px solid #2a2a2a',
+          background: cardBg, border: `1px solid ${border}`,
           borderRadius: '12px', padding: '1.5rem',
-          textAlign: 'center', marginBottom: '32px'
+          textAlign: 'center', marginBottom: '28px'
         }}>
-          <p style={{ color: '#888', marginBottom: '12px' }}>
+          <p style={{ color: textMuted, marginBottom: '12px' }}>
             Join the conversation — sign in to comment
           </p>
           <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
@@ -153,10 +145,10 @@ export default function CommentSection({ newsId }) {
               fontSize: '0.9rem', fontWeight: '600'
             }}>Sign In</Link>
             <Link to="/register" style={{
-              background: 'transparent', color: '#aaa',
+              background: 'transparent', color: textMuted,
               padding: '8px 20px', borderRadius: '6px',
               fontSize: '0.9rem', fontWeight: '600',
-              border: '1px solid #333'
+              border: `1px solid ${border2}`
             }}>Register</Link>
           </div>
         </div>
@@ -166,20 +158,20 @@ export default function CommentSection({ newsId }) {
       {loading ? (
         <div className="loading-spinner"><div className="spinner" /></div>
       ) : comments.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '3rem', color: '#555' }}>
+        <div style={{ textAlign: 'center', padding: '3rem', color: textMuted }}>
           <div style={{ fontSize: '2.5rem', marginBottom: '12px' }}>💭</div>
           <p>No comments yet. Be the first to share your thoughts!</p>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           {comments.map(comment => (
             <div key={comment.id} style={{
-              background: '#1a1a1a', border: '1px solid #242424',
+              background: cardBg, border: `1px solid ${border}`,
               borderRadius: '12px', padding: '1.25rem',
               transition: 'border-color 0.2s'
             }}
-              onMouseOver={e => e.currentTarget.style.borderColor = '#333'}
-              onMouseOut={e => e.currentTarget.style.borderColor = '#242424'}
+              onMouseOver={e => e.currentTarget.style.borderColor = border2}
+              onMouseOut={e => e.currentTarget.style.borderColor = border}
             >
               <div style={{
                 display: 'flex', justifyContent: 'space-between',
@@ -188,45 +180,32 @@ export default function CommentSection({ newsId }) {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <div style={{
                     width: '34px', height: '34px', borderRadius: '50%',
-                    background: `hsl(${comment.user?.name?.charCodeAt(0) * 10}, 60%, 35%)`,
+                    background: `hsl(${comment.user?.name?.charCodeAt(0) * 10}, 55%, 40%)`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontWeight: '700', fontSize: '0.85rem', color: '#fff', flexShrink: 0
                   }}>{comment.user?.name?.charAt(0).toUpperCase()}</div>
                   <div>
-                    <div style={{ fontWeight: '600', fontSize: '0.9rem', color: '#ddd' }}>
+                    <div style={{ fontWeight: '600', fontSize: '0.9rem', color: textMain }}>
                       {comment.user?.name}
-                      {user?.role === 'admin' && (
-                        <span style={{
-                          marginLeft: '8px', background: '#c0392b',
-                          color: '#fff', fontSize: '0.6rem',
-                          padding: '1px 6px', borderRadius: '10px', fontWeight: '700'
-                        }}>ADMIN</span>
-                      )}
                     </div>
-                    <div style={{ fontSize: '0.75rem', color: '#555' }}>
+                    <div style={{ fontSize: '0.75rem', color: textMuted }}>
                       {timeAgo(comment.createdAt)}
                     </div>
                   </div>
                 </div>
-
-                {/* Delete button — visible to comment owner or admin */}
                 {(user?.id === comment.userId || user?.role === 'admin') && (
-                  <button
-                    onClick={() => handleDelete(comment.id)}
-                    style={{
-                      background: 'transparent', border: 'none',
-                      color: '#555', fontSize: '0.8rem', cursor: 'pointer',
-                      padding: '4px 8px', borderRadius: '4px',
-                      transition: 'color 0.2s'
-                    }}
+                  <button onClick={() => handleDelete(comment.id)} style={{
+                    background: 'transparent', border: 'none',
+                    color: textMuted, fontSize: '0.8rem', cursor: 'pointer',
+                    padding: '4px 8px', borderRadius: '4px', transition: 'color 0.2s'
+                  }}
                     onMouseOver={e => e.target.style.color = '#e74c3c'}
-                    onMouseOut={e => e.target.style.color = '#555'}
+                    onMouseOut={e => e.target.style.color = textMuted}
                   >🗑️ Delete</button>
                 )}
               </div>
-
               <p style={{
-                color: '#bbb', fontSize: '0.95rem',
+                color: textContent, fontSize: '0.95rem',
                 lineHeight: '1.7', paddingLeft: '44px'
               }}>{comment.content}</p>
             </div>
