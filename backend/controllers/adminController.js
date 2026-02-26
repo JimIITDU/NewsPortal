@@ -74,9 +74,14 @@ exports.updateUserRole = async (req, res) => {
     if (user.id === req.user.id) {
       return res.status(400).json({ message: 'You cannot change your own role.' });
     }
-    const newRole = user.role === 'admin' ? 'user' : 'admin';
-    await user.update({ role: newRole });
-    res.json({ message: `User role updated to ${newRole}.`, role: newRole });
+
+    const { role } = req.body;
+    if (!['reader', 'reporter', 'admin'].includes(role)) {
+      return res.status(400).json({ message: 'Invalid role.' });
+    }
+
+    await user.update({ role });
+    res.json({ message: `User role updated to ${role}.`, role });
   } catch (err) {
     res.status(500).json({ message: 'Server error.', error: err.message });
   }
