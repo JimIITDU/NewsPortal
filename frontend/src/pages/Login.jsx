@@ -75,7 +75,7 @@ export default function Login({ darkMode = true }) {
               }}>Email Address</label>
               <input
                 type="email"
-                placeholder="you@example.com"
+                placeholder="[my email]@gmail.com"
                 value={form.email}
                 onChange={e => setForm({ ...form, email: e.target.value })}
                 required

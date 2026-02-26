@@ -68,8 +68,8 @@ export default function Register({ darkMode = true }) {
 
           <form onSubmit={handleSubmit}>
             {[
-              { label: 'Full Name', key: 'name', type: 'text', placeholder: 'John Doe' },
-              { label: 'Email Address', key: 'email', type: 'email', placeholder: 'you@example.com' },
+              { label: 'Full Name', key: 'name', type: 'text', placeholder: 'Jim' },
+              { label: 'Email Address', key: 'email', type: 'email', placeholder: '[jim]@gmail.com' },
               { label: 'Password', key: 'password', type: 'password', placeholder: 'Min. 6 characters' },
             ].map(({ label, key, type, placeholder }) => (
               <div key={key} style={{ marginBottom: '16px' }}>
