@@ -11,6 +11,7 @@ const bookmarkRoutes = require('./routes/bookmarkRoutes');
 const userRoutes = require('./routes/userRoutes');
 const likeRoutes = require('./routes/likeRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const reporterApplicationRoutes = require('./routes/reporterApplicationRoutes');
 
 const app = express();
 app.use(cors());
@@ -24,6 +25,7 @@ app.use('/api/bookmarks', bookmarkRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/likes', likeRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/reporter-applications', reporterApplicationRoutes);
 
 const PORT = process.env.PORT || 5000;
 sequelize.authenticate()

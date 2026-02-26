@@ -23,6 +23,7 @@ const News = require('./News')(sequelize);
 const Comment = require('./Comment')(sequelize);
 const Bookmark = require('./Bookmark')(sequelize);
 const Like = require('./Like')(sequelize);
+const ReporterApplication = require('./ReporterApplication')(sequelize);
 
 // News associations
 User.hasMany(News, { foreignKey: 'authorId' });
@@ -48,4 +49,7 @@ Like.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 News.hasMany(Like, { foreignKey: 'newsId' });
 Like.belongsTo(News, { foreignKey: 'newsId', as: 'news' });
 
-module.exports = { sequelize, Sequelize, User, Category, News, Comment, Bookmark, Like };
+User.hasMany(ReporterApplication, { foreignKey: 'userId' });
+ReporterApplication.belongsTo(User, { foreignKey: 'userId', as: 'applicant' });
+
+module.exports = { sequelize, Sequelize, User, Category, News, Comment, Bookmark, Like, ReporterApplication };
