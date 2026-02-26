@@ -22,15 +22,15 @@ export default function ManageUsers({ darkMode = true }) {
 
   useEffect(() => { fetchUsers() }, [])
 
-  const handleToggleRole = async (id) => {
-    if (!confirm('Toggle this user\'s role?')) return
-    try {
-      await api.put(`/admin/users/${id}/role`)
-      fetchUsers()
-    } catch (err) {
-      alert(err.response?.data?.message || 'Error updating role.')
-    }
+ const handleChangeRole = async (id, newRole) => {
+  if (!confirm(`Change this user's role to ${newRole}?`)) return
+  try {
+    await api.put(`/admin/users/${id}/role`, { role: newRole })
+    fetchUsers()
+  } catch (err) {
+    alert(err.response?.data?.message || 'Error updating role.')
   }
+}
 
   const handleDelete = async (id) => {
     if (!confirm('Permanently delete this user? This cannot be undone.')) return
@@ -137,26 +137,53 @@ export default function ManageUsers({ darkMode = true }) {
                     <td style={{ padding: '14px 16px' }}>
                       {u.id !== currentUser?.id ? (
                         <div style={{ display: 'flex', gap: '8px' }}>
-                          <button
-                            onClick={() => handleToggleRole(u.id)}
-                            style={{
-                              padding: '5px 12px', borderRadius: '6px', fontSize: '0.8rem',
-                              fontWeight: '600', cursor: 'pointer', border: 'none',
-                              background: u.role === 'admin' ? 'rgba(39,174,96,0.15)' : 'rgba(192,57,43,0.15)',
-                              color: u.role === 'admin' ? '#27ae60' : '#c0392b',
-                            }}
-                          >{u.role === 'admin' ? '→ User' : '→ Admin'}</button>
-                          <button
-                            onClick={() => handleDelete(u.id)}
-                            style={{
-                              padding: '5px 12px', borderRadius: '6px', fontSize: '0.8rem',
-                              fontWeight: '600', cursor: 'pointer', border: 'none',
-                              background: 'rgba(192,57,43,0.1)', color: '#c0392b',
-                            }}
-                          >Delete</button>
-                        </div>
+  {/* Promote/Demote to Reporter */}
+  <button
+    onClick={() => handleChangeRole(u.id, u.role === 'reporter' ? 'reader' : 'reporter')}
+    style={{
+      padding: '5px 12px', borderRadius: '6px', fontSize: '0.8rem',
+      fontWeight: '600', cursor: 'pointer', border: 'none',
+      background: u.role === 'reporter' ? 'rgba(39,174,96,0.15)' : 'rgba(142,68,173,0.15)',
+      color: u.role === 'reporter' ? '#27ae60' : '#8e44ad',
+    }}
+  >{u.role === 'reporter' ? '→ Reader' : '→ Reporter'}</button>
+
+  {/* Promote/Demote to Admin */}
+  <button
+    onClick={() => handleChangeRole(u.id, u.role === 'admin' ? 'reader' : 'admin')}
+    style={{
+      padding: '5px 12px', borderRadius: '6px', fontSize: '0.8rem',
+      fontWeight: '600', cursor: 'pointer', border: 'none',
+      background: u.role === 'admin' ? 'rgba(39,174,96,0.15)' : 'rgba(192,57,43,0.15)',
+      color: u.role === 'admin' ? '#27ae60' : '#c0392b',
+    }}
+  >{u.role === 'admin' ? '→ Reader' : '→ Admin'}</button>
+
+  {/* Delete */}
+  <button
+    onClick={() => handleDelete(u.id)}
+    style={{
+      padding: '5px 12px', borderRadius: '6px', fontSize: '0.8rem',
+      fontWeight: '600', cursor: 'pointer', border: 'none',
+      background: 'rgba(192,57,43,0.1)', color: '#c0392b',
+    }}
+  >Delete</button>
+</div>
                       ) : (
-                        <span style={{ color: textMuted, fontSize: '0.8rem' }}>—</span>
+                        <span style={{
+  background: u.role === 'admin'
+    ? 'rgba(192,57,43,0.15)'
+    : u.role === 'reporter'
+    ? 'rgba(142,68,173,0.15)'
+    : darkMode ? '#2a2a2a' : '#f0f0f0',
+  color: u.role === 'admin'
+    ? '#c0392b'
+    : u.role === 'reporter'
+    ? '#8e44ad'
+    : textMuted,
+  padding: '2px 10px', borderRadius: '20px',
+  fontSize: '0.75rem', fontWeight: '700'
+}}>{u.role}</span>
                       )}
                     </td>
                   </tr>

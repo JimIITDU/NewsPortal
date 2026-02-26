@@ -13,6 +13,7 @@ import ManageUsers from './pages/admin/ManageUsers'
 import ProtectedRoute from './components/ProtectedRoute'
 import NotFound from './pages/NotFound'
 import BackToTop from './components/BackToTop'
+import ReporterDashboard from './pages/reporter/reporterDashboard'
 
 export default function App() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -67,6 +68,9 @@ export default function App() {
           <Route path="*" element={<NotFound darkMode={darkMode} />} />
         </Route>
         <Route path="/" element={<Home darkMode={darkMode} />} />
+        <Route path="/reporter" element={<ProtectedRoute reporterOnly />}>
+  <Route index element={<ReporterDashboard darkMode={darkMode} />} />
+</Route>
       </Routes>
       <BackToTop darkMode={darkMode} />
     </div>

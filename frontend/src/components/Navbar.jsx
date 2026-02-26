@@ -55,8 +55,11 @@ export default function Navbar({ darkMode, setDarkMode }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Link to="/" style={getLinkStyle('/')}>Home</Link>
             {user?.role === 'admin' && (
-              <Link to="/admin" style={getLinkStyle('/admin')}>⚙️ Admin</Link>
-            )}
+  <Link to="/admin" style={getLinkStyle('/admin')}>⚙️ Admin</Link>
+)}
+{user?.role === 'reporter' && (
+  <Link to="/reporter" style={getLinkStyle('/reporter')}>✍️ Dashboard</Link>
+)}
 
             {/* Theme toggle */}
             <button onClick={() => setDarkMode(!darkMode)} style={{
