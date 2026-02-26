@@ -12,6 +12,7 @@ import ManageCategories from './pages/admin/ManageCategories'
 import ManageUsers from './pages/admin/ManageUsers'
 import ProtectedRoute from './components/ProtectedRoute'
 import NotFound from './pages/NotFound'
+import BackToTop from './components/BackToTop'
 
 export default function App() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -65,7 +66,9 @@ export default function App() {
           <Route path="users" element={<ManageUsers darkMode={darkMode} />} />
           <Route path="*" element={<NotFound darkMode={darkMode} />} />
         </Route>
+        <Route path="/" element={<Home darkMode={darkMode} />} />
       </Routes>
+      <BackToTop darkMode={darkMode} />
     </div>
   )
 }

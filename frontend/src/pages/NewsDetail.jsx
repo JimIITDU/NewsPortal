@@ -31,6 +31,17 @@ export default function NewsDetail({ darkMode = true }) {
   const border = darkMode ? '#222' : '#e8e8e8'
   const contentColor = darkMode ? '#ccc' : '#333'
   const cardBg = darkMode ? '#1a1a1a' : '#fff'
+  const shareUrl = window.location.href
+  const shareTitle = news.title
+
+const handleShare = (platform) => {
+  const urls = {
+    twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle)}&url=${encodeURIComponent(shareUrl)}`,
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
+    whatsapp: `https://wa.me/?text=${encodeURIComponent(shareTitle + ' ' + shareUrl)}`
+  }
+  window.open(urls[platform], '_blank', 'width=600,height=400')
+}
 
   return (
     <div style={{ minHeight: '100vh', background: darkMode ? '#0f0f0f' : '#f4f4f4' }}>
@@ -79,6 +90,9 @@ export default function NewsDetail({ darkMode = true }) {
                     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
                   })}
                 </div>
+                <div style={{ fontSize: '0.8rem', color: '#c0392b', fontWeight: '600', marginTop: '2px' }}>
+                ⏱️ {Math.max(1, Math.ceil(news.content?.split(' ').length / 200))} min read
+              </div>
               </div>
             </div>
 
@@ -94,6 +108,31 @@ export default function NewsDetail({ darkMode = true }) {
               <LikeButton newsId={id} darkMode={darkMode} />
               <BookmarkButton newsId={id} darkMode={darkMode} />
             </div>
+            {/* Share Buttons */}
+<div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+  <span style={{ fontSize: '0.8rem', color: textMuted, marginRight: '4px' }}>Share:</span>
+  {[
+    { platform: 'twitter', label: '𝕏', color: '#000' },
+    { platform: 'facebook', label: 'f', color: '#1877f2' },
+    { platform: 'whatsapp', label: '✉', color: '#25d366' },
+  ].map(({ platform, label, color }) => (
+    <button
+      key={platform}
+      onClick={() => handleShare(platform)}
+      style={{
+        width: '32px', height: '32px',
+        borderRadius: '50%', border: 'none',
+        background: color, color: '#fff',
+        fontSize: '0.85rem', fontWeight: '700',
+        cursor: 'pointer', display: 'flex',
+        alignItems: 'center', justifyContent: 'center',
+        transition: 'transform 0.2s, opacity 0.2s',
+      }}
+      onMouseOver={e => e.currentTarget.style.opacity = '0.85'}
+      onMouseOut={e => e.currentTarget.style.opacity = '1'}
+    >{label}</button>
+  ))}
+</div>
           </div>
 
           {/* Tags */}
@@ -120,7 +159,7 @@ export default function NewsDetail({ darkMode = true }) {
         {/* Related */}
         {related.length > 0 && (
           <div style={{ borderTop: `1px solid ${border}`, paddingTop: '48px', marginBottom: '0' }}>
-            <h2 className="section-title">Related Articles</h2>
+            <h2 className="section-title" style={{color: textMain}}>Related Articles</h2>
             <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',

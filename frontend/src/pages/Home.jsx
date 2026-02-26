@@ -16,8 +16,18 @@ export default function Home({ darkMode = true }) {
   const textMuted = darkMode ? '#888' : '#666'
 
   useEffect(() => {
-    api.get('/categories').then(res => setCategories(res.data))
-  }, [])
+  Promise.all([
+    api.get('/categories'),
+    api.get('/news')
+  ]).then(([catRes, newsRes]) => {
+    const newsData = newsRes.data
+    const catsWithCount = catRes.data.map(c => ({
+      ...c,
+      count: newsData.filter(n => n.categoryId === c.id).length
+    }))
+    setCategories(catsWithCount)
+  })
+}, [])
 
   useEffect(() => {
     const tag = searchParams.get('tag')
@@ -105,13 +115,22 @@ export default function Home({ darkMode = true }) {
               color: categoryId === '' ? '#fff' : textMuted,
             }}>All</button>
             {categories.map(c => (
-              <button key={c.id} onClick={() => setCategoryId(c.id)} style={{
-                padding: '10px 18px', borderRadius: '20px', fontSize: '0.85rem',
-                fontWeight: '600', border: 'none', cursor: 'pointer', transition: 'all 0.2s',
-                background: categoryId == c.id ? '#c0392b' : darkMode ? '#1e1e1e' : '#e8e8e8',
-                color: categoryId == c.id ? '#fff' : textMuted,
-              }}>{c.name}</button>
-            ))}
+  <button key={c.id} onClick={() => setCategoryId(c.id)} style={{
+    padding: '10px 18px', borderRadius: '20px', fontSize: '0.85rem',
+    fontWeight: '600', border: 'none', cursor: 'pointer', transition: 'all 0.2s',
+    background: categoryId == c.id ? '#c0392b' : darkMode ? '#1e1e1e' : '#e8e8e8',
+    color: categoryId == c.id ? '#fff' : textMuted,
+  }}>
+    {c.name}
+    <span style={{
+      marginLeft: '6px',
+      background: categoryId == c.id ? 'rgba(255,255,255,0.3)' : 'rgba(192,57,43,0.15)',
+      color: categoryId == c.id ? '#fff' : '#c0392b',
+      padding: '1px 7px', borderRadius: '10px',
+      fontSize: '0.75rem', fontWeight: '700'
+    }}>{c.count || 0}</span>
+  </button>
+))}
           </div>
         </div>
 
