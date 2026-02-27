@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import api from '../../api/axios'
+import RichTextEditor from '../../components/RichTextEditor'
 
 const emptyForm = { title: '', content: '', imageUrl: '', categoryId: '', tags: '' }
 
@@ -123,11 +124,11 @@ export default function ManageNews({ darkMode = true }) {
             </div>
             <div style={{ marginBottom: '20px' }}>
               <label style={labelStyle}>Content</label>
-              <textarea
-                style={{ ...inputStyle, minHeight: '140px', resize: 'vertical' }}
-                name="content" placeholder="Write your article..."
-                value={form.content} onChange={handleChange} required
-              />
+              <RichTextEditor
+  value={form.content}
+  onChange={val => setForm({ ...form, content: val })}
+  darkMode={darkMode}
+/>
             </div>
             <div style={{ display: 'flex', gap: '12px' }}>
               <button type="submit" style={{

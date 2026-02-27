@@ -5,6 +5,7 @@ import CommentSection from '../components/CommentSection'
 import BookmarkButton from '../components/BookmarkButton'
 import LikeButton from '../components/LikeButton'
 import TagList from '../components/TagList'
+import RichTextEditor from '../components/RichTextEditor'
 
 export default function NewsDetail({ darkMode = true }) {
   const { id } = useParams()
@@ -139,11 +140,28 @@ const handleShare = (platform) => {
           <TagList tags={news.tags} darkMode={darkMode} />
 
           {/* Content */}
-          <div style={{
-            fontSize: '1.1rem', lineHeight: '1.9',
-            color: contentColor, marginBottom: '48px',
-            whiteSpace: 'pre-wrap', marginTop: '16px'
-          }}>{news.content}</div>
+          <>
+  <style>{`
+    .article-content { font-size: 1.1rem; line-height: 1.9; color: ${contentColor}; margin-bottom: 48px; margin-top: 16px; }
+    .article-content h1, .article-content h2, .article-content h3 { font-family: 'Playfair Display', serif; color: ${darkMode ? '#fff' : '#111'}; margin: 24px 0 12px; }
+    .article-content h1 { font-size: 2rem; }
+    .article-content h2 { font-size: 1.6rem; }
+    .article-content h3 { font-size: 1.3rem; }
+    .article-content p { margin-bottom: 16px; }
+    .article-content strong { color: ${darkMode ? '#fff' : '#000'}; font-weight: 700; }
+    .article-content em { font-style: italic; }
+    .article-content ul, .article-content ol { padding-left: 24px; margin-bottom: 16px; }
+    .article-content li { margin-bottom: 8px; }
+    .article-content blockquote { border-left: 4px solid #c0392b; padding-left: 16px; margin: 20px 0; color: ${darkMode ? '#aaa' : '#555'}; font-style: italic; }
+    .article-content pre { background: ${darkMode ? '#1e1e1e' : '#f5f5f5'}; padding: 16px; border-radius: 8px; overflow-x: auto; margin-bottom: 16px; }
+    .article-content code { background: ${darkMode ? '#2a2a2a' : '#f0f0f0'}; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+    .article-content a { color: #c0392b; text-decoration: underline; }
+  `}</style>
+  <div
+    className="article-content"
+    dangerouslySetInnerHTML={{ __html: news.content }}
+  />
+</>
 
           <button onClick={() => navigate(-1)} style={{
             background: 'transparent',

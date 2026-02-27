@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../../api/axios'
 import { useAuth } from '../../context/AuthContext'
+import RichTextEditor from '../../components/RichTextEditor'
 
 export default function ReporterDashboard({ darkMode = true }) {
   const { user } = useAuth()
@@ -335,12 +336,11 @@ export default function ReporterDashboard({ darkMode = true }) {
 
               <div style={{ marginBottom: '24px' }}>
                 <label style={labelStyle}>Content *</label>
-                <textarea
-                  style={{ ...inputStyle, minHeight: '200px', resize: 'vertical' }}
-                  name="content" placeholder="Write your article here..."
-                  value={form.content}
-                  onChange={e => setForm({ ...form, content: e.target.value })} required
-                />
+                <RichTextEditor
+  value={form.content}
+  onChange={val => setForm({ ...form, content: val })}
+  darkMode={darkMode}
+/>
               </div>
 
               <div style={{ display: 'flex', gap: '12px' }}>
