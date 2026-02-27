@@ -88,8 +88,13 @@ export default function Navbar({ darkMode, setDarkMode }) {
   }}>✍️ Become Reporter</Link>
 )}
             {user?.role === 'admin' && (
+              <>
   <Link to="/admin" style={getLinkStyle('/admin')}>⚙️ Admin</Link>
-  // <Link to="/admin/applications" style={{...getLinkStyle('/admin/applications'), position: 'relative'}}>📋 Applications</Link>
+<Link to="/reporter" style={getLinkStyle('/reporter')}>✍️ Dashboard</Link>
+{/* <Link to="/admin/applications" style={{...getLinkStyle('/admin/applications'), position: 'relative'}}>📋 Applications</Link> */}
+              </>
+
+
 )}
 {user?.role === 'reporter' && (
   <Link to="/reporter" style={getLinkStyle('/reporter')}>✍️ Dashboard</Link>
