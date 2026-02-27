@@ -10,10 +10,12 @@ import Dashboard from './pages/admin/Dashboard'
 import ManageNews from './pages/admin/ManageNews'
 import ManageCategories from './pages/admin/ManageCategories'
 import ManageUsers from './pages/admin/ManageUsers'
+import ManageApplications from './pages/admin/ManageApplications'
 import ProtectedRoute from './components/ProtectedRoute'
 import NotFound from './pages/NotFound'
 import BackToTop from './components/BackToTop'
 import ReporterDashboard from './pages/reporter/reporterDashboard'
+import ApplyReporter from './pages/ApplyReporter'
 
 export default function App() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -57,6 +59,12 @@ export default function App() {
         <Route path="/login" element={<Login darkMode={darkMode} />} />
         <Route path="/register" element={<Register darkMode={darkMode} />} />
         <Route path="/news/:id" element={<NewsDetail darkMode={darkMode} />} />
+        <Route path="/apply-reporter" element={<ProtectedRoute />}>
+          <Route index element={<ApplyReporter darkMode={darkMode} />} />
+        </Route>
+        <Route path="/reporter" element={<ProtectedRoute reporterOnly />}>
+          <Route index element={<ReporterDashboard darkMode={darkMode} />} />
+        </Route>
         <Route path="/profile" element={<ProtectedRoute />}>
           <Route index element={<Profile darkMode={darkMode} />} />
         </Route>
@@ -65,12 +73,10 @@ export default function App() {
           <Route path="news" element={<ManageNews darkMode={darkMode} />} />
           <Route path="categories" element={<ManageCategories darkMode={darkMode} />} />
           <Route path="users" element={<ManageUsers darkMode={darkMode} />} />
+          <Route path="applications" element={<ManageApplications darkMode={darkMode} />} />
           <Route path="*" element={<NotFound darkMode={darkMode} />} />
         </Route>
-        <Route path="/" element={<Home darkMode={darkMode} />} />
-        <Route path="/reporter" element={<ProtectedRoute reporterOnly />}>
-  <Route index element={<ReporterDashboard darkMode={darkMode} />} />
-</Route>
+        <Route path="*" element={<NotFound darkMode={darkMode} />} />
       </Routes>
       <BackToTop darkMode={darkMode} />
     </div>

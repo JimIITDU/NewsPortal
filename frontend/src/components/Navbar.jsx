@@ -54,8 +54,18 @@ export default function Navbar({ darkMode, setDarkMode }) {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Link to="/" style={getLinkStyle('/')}>Home</Link>
+            {user?.role === 'reader' && (
+  <Link to="/apply-reporter" style={{
+    ...getLinkStyle('/apply-reporter'),
+    background: isActive('/apply-reporter') ? '#8e44ad' : 'rgba(142,68,173,0.15)',
+    color: isActive('/apply-reporter') ? '#fff' : '#8e44ad',
+    padding: '7px 14px', borderRadius: '6px',
+    fontSize: '0.85rem', fontWeight: '600'
+  }}>✍️ Become Reporter</Link>
+)}
             {user?.role === 'admin' && (
   <Link to="/admin" style={getLinkStyle('/admin')}>⚙️ Admin</Link>
+  // <Link to="/admin/applications" style={{...getLinkStyle('/admin/applications'), position: 'relative'}}>📋 Applications</Link>
 )}
 {user?.role === 'reporter' && (
   <Link to="/reporter" style={getLinkStyle('/reporter')}>✍️ Dashboard</Link>

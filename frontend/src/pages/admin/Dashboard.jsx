@@ -27,6 +27,7 @@ export default function Dashboard({ darkMode = true }) {
     { label: 'Total Likes', value: stats?.totalLikes, icon: '❤️', color: '#e74c3c' },
     { label: 'Total Views', value: stats?.totalViews, icon: '👁️', color: '#8e44ad' },
     { label: 'Bookmarks', value: stats?.totalBookmarks, icon: '🔖', color: '#f39c12' },
+    { to: '/admin/applications', icon: '📋', label: 'Applications', desc: 'Review reporter applications' },
   ]
 
   return (
@@ -204,11 +205,12 @@ export default function Dashboard({ darkMode = true }) {
         </div>
 
         {/* Quick Links */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '16px' }}>
           {[
             { to: '/admin/news', icon: '📰', label: 'Manage Articles', desc: 'Create, edit, delete news' },
             { to: '/admin/categories', icon: '🗂️', label: 'Manage Categories', desc: 'Organize your content' },
             { to: '/admin/users', icon: '👥', label: 'Manage Users', desc: 'View and moderate users' },
+            { to: '/admin/applications', icon: '📋', label: 'Reporter Applications', desc: 'Review pending applications' },
           ].map(link => (
             <Link key={link.to} to={link.to} style={{ textDecoration: 'none' }}>
               <div style={{
