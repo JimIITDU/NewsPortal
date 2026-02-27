@@ -1,13 +1,22 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useState, useEffect } from 'react'
+import api from '../api/axios'
 
 export default function Navbar({ darkMode, setDarkMode }) {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
+  const [tickerNews, setTickerNews] = useState([])
 
   const handleLogout = () => { logout(); navigate('/') }
   const isActive = (path) => location.pathname === path
+
+  useEffect(() => {
+    api.get('/news')
+      .then(res => setTickerNews(res.data.slice(0, 6)))
+      .catch(() => {})
+  }, [])
 
   const navStyle = {
     background: darkMode ? 'rgba(15,15,15,0.97)' : 'rgba(255,255,255,0.97)',
@@ -31,15 +40,30 @@ export default function Navbar({ darkMode, setDarkMode }) {
   return (
     <>
       <div className="ticker-wrap">
-        <div className="ticker-content">
-          <span className="ticker-label">🔴 Breaking</span>
-          <span className="ticker-item">Global markets reach record highs amid economic optimism</span>
-          <span className="ticker-item">Scientists announce major breakthrough in renewable energy</span>
-          <span className="ticker-item">World leaders gather for climate summit in Geneva</span>
-          <span className="ticker-item">Tech giant unveils next-generation AI assistant</span>
-          <span className="ticker-item">Championship finals set for this weekend</span>
-        </div>
-      </div>
+  <div className="ticker-content">
+    <span className="ticker-label">🔴 Breaking</span>
+    {tickerNews.length > 0 ? (
+      tickerNews.map(n => (
+        <span
+          key={n.id}
+          className="ticker-item"
+          onClick={() => navigate(`/news/${n.id}`)}
+          style={{ cursor: 'pointer' }}
+          onMouseOver={e => e.target.style.color = '#fff'}
+          onMouseOut={e => e.target.style.color = ''}
+        >
+          {n.title}
+        </span>
+      ))
+    ) : (
+      // Fallback if no news yet
+      <>
+        <span className="ticker-item">Welcome to NewsPortal — your source for breaking news</span>
+        <span className="ticker-item">Stay informed with the latest stories from around the world</span>
+      </>
+    )}
+  </div>
+</div>
 
       <nav style={navStyle}>
         <div style={innerStyle}>
