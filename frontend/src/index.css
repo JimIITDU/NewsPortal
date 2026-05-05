@@ -251,11 +251,7 @@ select {
 .form-group {
   margin-bottom: 20px;
 }
-@media (prefers-color-scheme: light) {
-  .section-title {
-    color: var(--dark);
-  }  
-}
+
 /* Section titles */
 .section-title {
   font-family: 'Playfair Display', serif;

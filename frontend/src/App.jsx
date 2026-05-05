@@ -14,7 +14,7 @@ import ManageApplications from './pages/admin/ManageApplications'
 import ProtectedRoute from './components/ProtectedRoute'
 import NotFound from './pages/NotFound'
 import BackToTop from './components/BackToTop'
-import ReporterDashboard from './pages/reporter/reporterDashboard'
+import ReporterDashboard from './pages/reporter/ReporterDashboard'
 import ApplyReporter from './pages/ApplyReporter'
 
 export default function App() {

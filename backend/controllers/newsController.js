@@ -1,4 +1,4 @@
-const { News, User, Category, Like } = require('../models');
+const { News, User, Category, Like} = require('../models');
 const { validationResult } = require('express-validator');
 const { Op } = require('sequelize');
 
@@ -30,6 +30,43 @@ exports.getAll = async (req, res) => {
     res.status(500).json({ message: 'Server error.', error: err.message });
   }
 };
+
+// exports.getAll = async (req, res) => {
+//   try {
+//     const { search, categoryId, tag } = req.query
+//     const where = {}
+//     if (search) where.title = { [Op.like]: `%${search}%` }
+//     if (categoryId) where.categoryId = categoryId
+//     if (tag) where.tags = { [Op.like]: `%${tag}%` }
+
+//     const news = await News.findAll({
+//       where,
+//       include: [
+//         { model: User, as: 'author', attributes: ['id', 'name', 'role'] },
+//         { model: Category, as: 'category', attributes: ['id', 'name'] },
+//         // ← Get like count in the SAME query using aggregation
+//         {
+//           model: Like,
+//           as: 'likes',
+//           attributes: []
+//         }
+//       ],
+//       attributes: {
+//         include: [
+//           // Count likes in same query — no extra queries needed!
+//           [sequelize.fn('COUNT', sequelize.col('likes.id')), 'likeCount']
+//         ]
+//       },
+//       group: ['News.id', 'author.id', 'category.id'],
+//       order: [['createdAt', 'DESC']],
+//       subQuery: false
+//     })
+
+//     res.json(news)
+//   } catch (err) {
+//     res.status(500).json({ message: 'Server error.', error: err.message })
+//   }
+// }
 
 exports.getOne = async (req, res) => {
   try {

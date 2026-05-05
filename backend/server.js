@@ -13,10 +13,14 @@ const likeRoutes = require('./routes/likeRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const reporterApplicationRoutes = require('./routes/reporterApplicationRoutes');
 
+const notFound = require('./middlewares/notFoundMiddleware');
+const errorHandler = require('./middlewares/errorMiddleware');
+
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ✅ ALL routes must be here FIRST
 app.use('/api/auth', authRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/categories', categoryRoutes);
@@ -26,6 +30,10 @@ app.use('/api/users', userRoutes);
 app.use('/api/likes', likeRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/reporter-applications', reporterApplicationRoutes);
+
+// ✅ These MUST be absolutely last
+app.use(notFound);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 sequelize.authenticate()
